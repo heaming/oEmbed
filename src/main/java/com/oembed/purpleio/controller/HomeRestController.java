@@ -20,13 +20,12 @@ public class HomeRestController {
 
     @RequestMapping(value="/rest/search")
     public Map<String, Object> search(Model model, @RequestBody HashMap<String, Object> jsonData) throws Exception {
-        System.out.println("jsonData: "+jsonData);
-        System.out.println("searchURL: "+(String) jsonData.get("searchUrl"));
 
         String searchUrl = (String) jsonData.get("searchUrl");
 
         Map<String, Object> result = searchService.search(searchUrl);
         model.addAttribute("data", result);
+
         return result;
     }
 

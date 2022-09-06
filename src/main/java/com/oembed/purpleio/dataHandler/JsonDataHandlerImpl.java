@@ -27,11 +27,10 @@ public class JsonDataHandlerImpl implements JsonDataHandler {
     @Override
     public JSONObject getJsonData(String url) throws Exception {
 
-        JSONObject obj = new JSONObject();
         String data = dataHandler.getData(url);
 
         JSONParser parser = new JSONParser();
-        obj = (JSONObject) parser.parse(data);
+        JSONObject obj = (JSONObject) parser.parse(data);
 
         System.out.println(this.getClass().getName()+ " : "+ obj);
 

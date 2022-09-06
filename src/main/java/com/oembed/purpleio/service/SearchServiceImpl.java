@@ -5,6 +5,7 @@ import com.oembed.purpleio.dataHandler.JsonDataHandler;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,6 +18,8 @@ public class SearchServiceImpl implements SearchService{
     @Autowired
     @Qualifier("jsonDataHandlerImpl")
     private JsonDataHandler jsonDataHandler;
+
+
 
     // ctor
     public SearchServiceImpl() {}
@@ -38,8 +41,6 @@ public class SearchServiceImpl implements SearchService{
             provider += "https://publish.twitter.com/oembed?format=json&url=";
         } else if(searchUrl.contains("vimeo")) {
             provider += "https://vimeo.com/api/oembed.json?url=";
-        } else {
-            // 지원하지 않는 호스트
         }
 
         provider += searchUrl;
@@ -49,30 +50,7 @@ public class SearchServiceImpl implements SearchService{
         JSONObject jsonObject = jsonDataHandler.getJsonData(provider);
         result = new ObjectMapper().readValue(jsonObject.toJSONString(), Map.class);
 
+        System.out.println(result);
         return result;
     }
-
-
-//    @Override
-//    public Map<String, Object> getYoutubeData() throws Exception {
-//
-//        jsonDataHandler.youtubeJsonData();
-//
-//        return null;
-//    }
-//
-//    @Override
-//    public Map<String, Object> getInstagramData() throws Exception {
-//        return null;
-//    }
-//
-//    @Override
-//    public Map<String, Object> getTwitterData() throws Exception {
-//        return null;
-//    }
-//
-//    @Override
-//    public Map<String, Object> getVimeoData() throws Exception {
-//        return null;
-//    }
 }

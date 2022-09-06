@@ -1,0 +1,6 @@
+spring:
+  config:
+    import:
+    - provider/twitter.yml
+    - provider/vimeo.yml
+    - provider/youtube.yml
