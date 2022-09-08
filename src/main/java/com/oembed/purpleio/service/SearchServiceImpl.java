@@ -2,10 +2,10 @@ package com.oembed.purpleio.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oembed.purpleio.dataHandler.JsonDataHandler;
+import com.oembed.purpleio.domain.*;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -19,7 +19,9 @@ public class SearchServiceImpl implements SearchService{
     @Qualifier("jsonDataHandlerImpl")
     private JsonDataHandler jsonDataHandler;
 
-
+    @Autowired
+    @Qualifier("dataRendererImpl")
+    private DataRenderer dataRenderer;
 
     // ctor
     public SearchServiceImpl() {}
@@ -27,30 +29,15 @@ public class SearchServiceImpl implements SearchService{
     // method
     public Map<String, Object> search(String searchUrl) throws Exception {
 
-        String provider = "";
         Map<String, Object> result = new HashMap<>();
 
-        // Provider URL
+        Provider provider = dataRenderer.providerRender(searchUrl);
 
-        if(searchUrl.contains("youtube")) {
-            provider += "https://www.youtube.com/oembed?format=json&url=";
-        } else if(searchUrl.contains("instagram")) {
-            // instagram 불가
-            provider += "https://graph.facebook.com/v10.0/instagram_oembed?url=";
-        } else if(searchUrl.contains("twitter")) {
-            provider += "https://publish.twitter.com/oembed?format=json&url=";
-        } else if(searchUrl.contains("vimeo")) {
-            provider += "https://vimeo.com/api/oembed.json?url=";
-        }
+        // Front 에 보여질 oEmbed Data
+        JSONObject jsonObject = jsonDataHandler.getJsonData(provider, searchUrl);
 
-        provider += searchUrl;
-
-        System.out.println("proveider:"+provider);
-
-        JSONObject jsonObject = jsonDataHandler.getJsonData(provider);
         result = new ObjectMapper().readValue(jsonObject.toJSONString(), Map.class);
 
-        System.out.println(result);
         return result;
     }
 }

@@ -1,6 +1,7 @@
+server:
+  port: 8080
+
 spring:
   config:
     import:
-    - provider/twitter.yml
-    - provider/vimeo.yml
-    - provider/youtube.yml
+    - provider/providers.yml

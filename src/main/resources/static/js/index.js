@@ -2,10 +2,30 @@ let searchBtn = $("#searchBtn");
 let resultList = $("#resultList");
 let questionBtn = $("#questionBtn");
 
+
+// * event
 searchBtn.on("click", searchBtnHandler);
 questionBtn.on("click", questionBtnHandler);
+$("#urlInput").on("keyup", function(e) {
+    if(e.keyCode == '13') {
+        searchBtnHandler();
+    }
+})
 
-// click event
+// * 유효성 검사
+function invalidCheck(urlInputValue) {
+    if(urlInputValue.includes("twitter") || urlInputValue.includes("vimeo") || urlInputValue.includes("youtube")) {
+        return 200;
+    }
+
+    if(urlInputValue.includes("instagram")) {
+        return 100;
+    }
+    return 400;
+}
+
+
+// * 확인
 function searchBtnHandler() {
     const urlInputValue = $("#urlInput").val();
     const flag = invalidCheck(urlInputValue);
@@ -17,16 +37,7 @@ function searchBtnHandler() {
     }
 }
 
-function questionBtnHandler() {
-    Swal.fire({
-        icon: 'info',
-        title: 'Token Required',
-        html: 'oEmbed 읽기 기능에 대한 <b>승인을 받은 사용자</b>만이 Instagram oEmbed 기능을 사용할 수 있습니다.',
-        footer: '<a href="https://developers.facebook.com/docs/instagram/oembed/">더 자세히 알고 싶다면...</a>'
-    })
-}
-
-// back으로 연결
+// * ajax
 function submit(urlInputValue) {
     $.ajax({
         url: "/rest/search",
@@ -41,33 +52,31 @@ function submit(urlInputValue) {
         dataType: "json",
         success: function (result) {
             if(result) {
-                listHandler(result);
+                listHandler(result["data"]);
             } else {
                 console.log("fail : none result");
             }
         },
         error: function (data) {
-            console.log(data);
-            customAlert(500);
+            customAlert(404);
         }
     })
 }
 
-// 유효성 검사
-function invalidCheck(urlInputValue) {
-    if(urlInputValue.includes("twitter") || urlInputValue.includes("vimeo") || urlInputValue.includes("youtube")) {
-        return 200;
-    }
 
-    if(urlInputValue.includes("instagram")) {
-        return 100;
-    }
-
-    return 400;
+// * UI
+//  ** instagram 관련 안내
+function questionBtnHandler() {
+    Swal.fire({
+        icon: 'info',
+        title: 'Token Required',
+        html: 'oEmbed 읽기 기능에 대해 <b>승인을 받은 사용자</b>만이 <br>Instagram oEmbed 기능을 사용할 수 있습니다.',
+        footer: '<a href="https://developers.facebook.com/docs/instagram/oembed/">더 자세히 알고 싶다면...</a>'
+    })
 }
 
+//  ** alert
 function customAlert(code) {
-
     if(code == 100) {
         Swal.fire(
             '준비중🛠',
@@ -84,7 +93,7 @@ function customAlert(code) {
         )
     }
 
-    if(code == 500) {
+    if(code == 404) {
         Swal.fire(
             '없어요😥',
             '요청하신 페이지를 찾을 수 없습니다',
@@ -95,6 +104,24 @@ function customAlert(code) {
 }
 
 
+//  ** list 자식 노드 구성
+function listUIHandler(key, value) {
+
+    const listUI = `
+        <tr>
+            <td className="px-4 border-top">
+                <div className="d-flex align-items-center text-gray">
+                    ${key}
+                </div>
+            </td>
+            <td className="px-4 border-top text-end">${value}</td>
+        </tr>`;
+
+    return listUI;
+}
+
+
+//  ** list 구성
 function listHandler(result) {
     let innerHTML = "";
 
@@ -123,18 +150,16 @@ function listHandler(result) {
     $("#urlInput").val("");
 }
 
-// make list
-function listUIHandler(key, value) {
 
-    const listUI = `
-        <tr>
-            <td className="px-4 border-top">
-                <div className="d-flex align-items-center text-gray">
-                    ${key}
-                </div>
-            </td>
-            <td className="px-4 border-top text-end">${value}</td>
-        </tr>`;
 
-    return listUI;
-}
+
+
+
+
+
+
+
+
+
+
+

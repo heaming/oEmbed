@@ -1,14 +1,15 @@
 package com.oembed.purpleio.dataHandler;
 
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oembed.purpleio.domain.DefaultResponseData;
+import com.oembed.purpleio.domain.Provider;
+import com.oembed.purpleio.domain.DataRenderer;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 public class JsonDataHandlerImpl implements JsonDataHandler {
@@ -18,22 +19,30 @@ public class JsonDataHandlerImpl implements JsonDataHandler {
     @Qualifier("dataHandlerImpl")
     private DataHandler dataHandler;
 
+    @Autowired
+    @Qualifier("dataRendererImpl")
+    private DataRenderer renderer;
+
     // ctor
-    public JsonDataHandlerImpl() {
-        System.out.println(this.getClass().getName());
-    }
+    public JsonDataHandlerImpl() {}
 
     // method
     @Override
-    public JSONObject getJsonData(String url) throws Exception {
+    public JSONObject getJsonData(Provider provider, String searchUrl) throws Exception {
 
-        String data = dataHandler.getData(url);
 
-        JSONParser parser = new JSONParser();
-        JSONObject obj = (JSONObject) parser.parse(data);
 
-        System.out.println(this.getClass().getName()+ " : "+ obj);
+        String data = dataHandler.getData(provider.getProviderName(), provider.getEndpointsUrl() + searchUrl);
 
-        return obj;
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+
+        DefaultResponseData responseData = renderer.responseDataRender(provider.getProviderName());
+        responseData = objectMapper.readValue(data, DefaultResponseData.class);
+
+        JSONObject json = (JSONObject) JSONValue.parse(objectMapper.writeValueAsString(responseData));
+
+        return json;
     }
 }

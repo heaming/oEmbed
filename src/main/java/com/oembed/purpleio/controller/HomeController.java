@@ -9,10 +9,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String home(Model model) {
-        model.addAttribute("name", "uu");
         return "index";
     }
-
-
 
 }
