@@ -1,8 +1,6 @@
 package com.oembed.purpleio.domain;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +19,6 @@ public class ProviderVimeo implements Provider {
 
     @Override
     public String getProviderName() {
-        System.out.println(providerName);
         return this.providerName;
     }
 

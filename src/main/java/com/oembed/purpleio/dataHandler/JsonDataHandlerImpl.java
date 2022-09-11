@@ -30,8 +30,6 @@ public class JsonDataHandlerImpl implements JsonDataHandler {
     @Override
     public JSONObject getJsonData(Provider provider, String searchUrl) throws Exception {
 
-
-
         String data = dataHandler.getData(provider.getProviderName(), provider.getEndpointsUrl() + searchUrl);
 
         ObjectMapper objectMapper = new ObjectMapper();
