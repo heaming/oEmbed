@@ -5,3 +5,5 @@ spring:
   config:
     import:
     - provider/providers.yml
+    - config/logback-spring.yml
+

@@ -1,0 +1,17 @@
+logging:
+    file:
+      name: logs/info.log
+    pattern:
+      file: "[%d{HH:mm:ss.SSS}][%-5level][%logger{30}.%method:line%line] - %msg%n"
+    logback:
+      rollingpolicy:
+        max-history: 7
+        max-file-size: 100KB
+        file-name-pattern: "logs/was-logs/info-log.%d{yyyy-MM-dd}_%i.zip"
+    charset:
+      file: UTF-8
+    level:
+      root: WARN
+      com.oembed.purpleio.controller.HomeRestController: INFO
+
+

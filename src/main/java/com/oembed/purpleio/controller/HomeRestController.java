@@ -3,6 +3,8 @@ package com.oembed.purpleio.controller;
 import com.oembed.purpleio.domain.ErrorResponse;
 import com.oembed.purpleio.service.SearchService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import java.util.Map;
 @RestController
 public class HomeRestController {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(HomeRestController.class);
+
     @Autowired
     @Qualifier("searchServiceImpl")
     private SearchService searchService;
@@ -26,6 +30,7 @@ public class HomeRestController {
         Map<String, Object> map = new LinkedHashMap<>();
 
         String searchUrl = (String) jsonData.get("searchUrl");
+        LOGGER.info("[HomeRestController.search()] Request :: searchUrl = {}", searchUrl);
 
         Map<String, Object> result = searchService.search(searchUrl);
 
@@ -39,6 +44,8 @@ public class HomeRestController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> errorHandling(Exception e) {
+
+        LOGGER.warn("[HomeRestController.errorHandling()] :: "+e.getMessage());
 
         ErrorResponse response = new ErrorResponse();
         response.setStatusCode(HttpStatus.NOT_FOUND.value());
